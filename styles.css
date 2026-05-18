@@ -60,7 +60,7 @@ html, body{
     border-radius: 8px;
     max-height: 95%;
     aspect-ratio: 1/1;
-    background-color: rgba(249, 236, 204);
+    background-color: rgb(247, 233, 195);
     box-shadow: 0px 0px 15px -2px rgb(0, 0, 0);
 
     /* Smooth scale-up transition when the card centers on screen */
@@ -119,4 +119,78 @@ html, body{
         transform: scale(1.02); /* Shrinks smoothly back to the start */
         box-shadow: 0px 10px 26px rgba(0, 0, 0, 0.18);
     }
+}
+
+/* THE BLACK SEMI-TRANSPARENT COVER */
+#blackBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.80); /* Dark transparent layer */
+    z-index: 10; /* Ensures it sits on top of cards (z-index 4) and background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Smooth fade-in hidden states */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Appended via JavaScript to show the overlay */
+#blackBackground.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* THE CONTAINER FOR YOUR LETTER */
+#messageBox {
+    background-color: #fffaf0; /* Warm white parchment paper color */
+    width: 85svw;
+    max-height: 85svh; /* Prevents long messages from spilling off-screen */
+    border-radius: 16px;
+    padding: 7svw 6svw 6svw 6svw;
+    position: relative;
+    box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.5);
+    overflow-y: auto; /* Allows scrolling inside the box if your letter is very long */
+    
+    /* Pop-out animation setup */
+    transform: scale(0.85);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Scales the message box up to normal size smoothly when opened */
+#blackBackground.active #messageBox {
+    transform: scale(1);
+}
+
+/* THE CLOSE BUTTON (X) */
+#closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 8svw;
+    background: none;
+    border: none;
+    color: #888;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* INNER LETTER TYPOGRAPHY */
+#messageContent h3 {
+    font-size: 6svw;
+    color: #333;
+    margin-bottom: 1rem;
+    font-family: inherit; /* Inherits your page font */
+}
+
+#messageContent p {
+    font-size: 4.5svw;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
 }
