@@ -69,6 +69,7 @@
     const messageContent = document.getElementById('messageContent');
     const closeBtn = document.getElementById('closeBtn');
     let fadeTimeout = null;
+    const playedAudios = new WeakSet();
 
     function clearFade() {
         if (fadeTimeout) {
@@ -125,6 +126,35 @@
         revealNext();
     }
 
+    function playCardAudio(card) {
+        const cardAudio = card.querySelector('audio.card-audio');
+        if (!cardAudio || playedAudios.has(cardAudio)) return;
+
+        const fadeDuration = 2000; // fade in over 2 seconds
+        const fadeSteps = 20;
+        const fadeStepTime = fadeDuration / fadeSteps;
+
+        cardAudio.volume = 0;
+        cardAudio.play().then(() => {
+            playedAudios.add(cardAudio);
+            let currentStep = 0;
+            const startVolume = 0;
+            const targetVolume = 1;
+
+            const fadeInterval = setInterval(() => {
+                currentStep += 1;
+                const nextVolume = Math.min(targetVolume, startVolume + (currentStep / fadeSteps));
+                cardAudio.volume = nextVolume;
+                if (currentStep >= fadeSteps) {
+                    clearInterval(fadeInterval);
+                    cardAudio.volume = targetVolume;
+                }
+            }, fadeStepTime);
+        }).catch(() => {
+            // Ignore play errors (browser restrictions) and do nothing.
+        });
+    }
+
     // 1. Loop through all cards and listen for a touch/click
     cards.forEach(card => {
         card.addEventListener('click', () => {
@@ -132,6 +162,7 @@
             if (!messageElement) return;
             const hiddenData = messageElement.innerHTML;
             showMessageWithFade(hiddenData);
+            playCardAudio(card);
             modalOverlay.classList.add('active');
         });
     });
