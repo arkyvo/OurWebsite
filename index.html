@@ -13,12 +13,53 @@
 <body>
 
     <div id = mainBackground>
-        <h1>HELLO</h1>
+        <div id = cContent>
+            <div class = "card-border" id="celeste">
+                <div class ="card-photo" style="background-image: url('assets/pictures/cards/celeste.jpg')"></div>
+                <p class = "quote">"Ikaw pa rin ang aking uuwian"</p>
+                <div class = "card-info">
+                    <p>Celeste</p>
+                    <p>Tothapi</p>
+                </div>
+                <audio class="card-audio" src="assets/Music/arawAraw.mp3"></audio>
+            </div>
+            <div class = "card-border" id="ces">
+                <div class ="card-photo" style="background-image: url('assets/pictures/cards/celeste.jpg')"></div>
+                <p class = "quote">"Ikaw pa rin ang aking uuwian"</p>
+                <div class = "card-info">
+                    <p>Celeste</p>
+                    <p>Tothapi</p>
+                </div>
+                <audio class="card-audio" src="assets/Music/arawAraw.mp3"></audio>
+            </div>
+        </div>
+        <div id = "blackBackground"></div>
         <div id = "imageBackground" ></div>
     </div>
 
+    <script>
+    const cards = document.querySelectorAll('.card-border');
 
-    
+    const options = {
+        root: document.getElementById('cContent'),
+        /* Target area mobile fix: Creates a 'sweet spot' window in the dead center of the phone screen */
+        rootMargin: "-25% 0px -25% 0px", 
+        threshold: 0 
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-focused');
+            } else {
+                entry.target.classList.remove('is-focused');
+            }
+        });
+    }, options);
+
+    cards.forEach(card => observer.observe(card));
+</script>   
+ 
 </body>
 
 
