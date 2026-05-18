@@ -182,6 +182,7 @@ html, body{
 
 /* INNER LETTER TYPOGRAPHY */
 #messageContent {
+    margin-top: 3svw;
     white-space: pre-wrap;
 }
 
