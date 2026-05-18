@@ -130,6 +130,11 @@
         const cardAudio = card.querySelector('audio.card-audio');
         if (!cardAudio || playedAudios.has(cardAudio)) return;
 
+        cardAudio.preload = 'auto';
+        cardAudio.playsInline = true;
+        cardAudio.setAttribute('playsinline', '');
+        cardAudio.setAttribute('webkit-playsinline', '');
+
         const fadeDuration = 2000; // fade in over 2 seconds
         const fadeSteps = 20;
         const fadeStepTime = fadeDuration / fadeSteps;
