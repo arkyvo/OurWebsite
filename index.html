@@ -25,10 +25,10 @@
 
                 <div class="card-message" style="display: none;">
                     <p>Tothapi, when I first heard the band in online platforms, I was not really interested in them. But lately I came to realized how much their song is similar to what I feel.  Just like what I said before, I could never be mad with you for a long time. Even if I don’t feel good with you, I still think and care for you. I always want your presence, your touch, your voice as much as possible. 
-                        <br><br>I am patient with you because my love for you is greater than any of those negative feelings. I will always be there for you. I will try to calm you down even if you push me away. You are everything for me, <strong> <em>my comfort </em></strong>,<strong> <em> my person</em></strong> and <strong> <em>my love</em></strong>. I will always choose to be with you, to stay with you... Just like the title,<strong> <em> “Celeste” </em></strong> are the <strong> <em>eternal love</em></strong> that I desire. So if there is still another life for us, I hope to keep holding your hand, for <strong> <em>eternity</em></strong>. To feel the embrace of your love, and the warmth of your touch.
-                        <br><br>I know that recently we’ve had fights because I lacked in giving attention and affection. But I hope you’ll believe me when I say that you are my “Celeste”, My one and only.
-                        <br><br>If you still remember the version of celeste where there was so much emotion in the end. That is how strong my love is for you. Powerful and loud. I love you always, aine.
-                        <br><br>With that, I am yours and will always want to be your person. Everything I do for you, I do because I love you. I fight for us because I want to. I would do anything that I can for you. I’m here as your half deaf listener and your shoulder to cry on. Happy Anniversary to us, my baby.<strong> <em> My Forever and ever...</em></strong> 
+                        <br>I am patient with you because my love for you is greater than any of those negative feelings. I will always be there for you. I will try to calm you down even if you push me away. You are everything for me,<strong><em> my comfort</em></strong>,<strong><em> my person</em></strong> and <strong><em>my love</em></strong>. I will always choose to be with you, to stay with you... Just like the title,<strong><em> “Celeste” </em></strong>are the<strong><em> eternal love</em></strong> that I desire. So if there is still another life for us, I hope to keep holding your hand, for <strong><em>eternity</em></strong>. To feel the embrace of your love, and the warmth of your touch.
+                        <br>I know that recently we’ve had fights because I lacked in giving attention and affection. But I hope you’ll believe me when I say that you are my “Celeste”, My one and only.
+                        <br>If you still remember the version of celeste where there was so much emotion in the end. That is how strong my love is for you. Powerful and loud. I love you always, aine.
+                        <br>With that, I am yours and will always want to be your person. Everything I do for you, I do because I love you. I fight for us because I want to. I would do anything that I can for you. I’m here as your half deaf listener and your shoulder to cry on. Happy Anniversary to us, my baby.<strong><em> My Forever and ever...</em></strong> 
                     </p>
                 </div>
             </div>
@@ -68,19 +68,70 @@
     const modalOverlay = document.getElementById('blackBackground');
     const messageContent = document.getElementById('messageContent');
     const closeBtn = document.getElementById('closeBtn');
+    let fadeTimeout = null;
+
+    function clearFade() {
+        if (fadeTimeout) {
+            clearTimeout(fadeTimeout);
+            fadeTimeout = null;
+        }
+    }
+
+    function wrapTextWithSpans(node) {
+        const fragment = document.createDocumentFragment();
+        const text = node.textContent;
+        for (const char of text) {
+            const span = document.createElement('span');
+            span.className = 'fade-letter';
+            span.textContent = char;
+            fragment.appendChild(span);
+        }
+        return fragment;
+    }
+
+    function cloneNodeWithLetterSpans(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            return wrapTextWithSpans(node);
+        }
+        const clone = node.cloneNode(false);
+        node.childNodes.forEach(child => clone.appendChild(cloneNodeWithLetterSpans(child)));
+        return clone;
+    }
+
+    function showMessageWithFade(html) {
+        clearFade();
+        messageContent.innerHTML = '';
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const fragment = document.createDocumentFragment();
+
+        doc.body.childNodes.forEach(node => fragment.appendChild(cloneNodeWithLetterSpans(node)));
+        messageContent.appendChild(fragment);
+
+        const letters = Array.from(messageContent.querySelectorAll('.fade-letter'));
+        let index = 0;
+
+        function revealNext() {
+            if (index >= letters.length) {
+                fadeTimeout = null;
+                return;
+            }
+            letters[index].classList.add('visible');
+            index += 1;
+            fadeTimeout = setTimeout(revealNext, 15);
+        }
+
+        revealNext();
+    }
 
     // 1. Loop through all cards and listen for a touch/click
     cards.forEach(card => {
         card.addEventListener('click', () => {
-            // Find the specific hidden message belonging to THIS card
             const messageElement = card.querySelector('.card-message');
             if (!messageElement) return;
             const hiddenData = messageElement.innerHTML;
-            
-            // Put it inside the visible popup container
-            messageContent.innerHTML = hiddenData;
-            
-            // Add the class that smoothly fades in the background and pops out the box
+            showMessageWithFade(hiddenData);
             modalOverlay.classList.add('active');
         });
     });
@@ -88,12 +139,14 @@
     // 2. Close the container when the "X" button is tapped
     closeBtn.addEventListener('click', () => {
         modalOverlay.classList.remove('active');
+        clearFade();
     });
 
     // 3. Mobile Friendly: Close the container if they tap anywhere on the empty black area
     modalOverlay.addEventListener('click', (event) => {
         if (event.target === modalOverlay) {
             modalOverlay.classList.remove('active');
+            clearFade();
         }
     });
     </script>   
