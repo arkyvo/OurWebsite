@@ -54,7 +54,7 @@ html, body{
     padding: 4svw;
     justify-content: flex-start;
     align-items: flex-start;
-    margin: 12svh 0;
+    margin: 15svh 0;
     width: 70svw; /*40 if inline-block*/
     height: auto;
     border-radius: 8px;
